@@ -12,37 +12,56 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		loadFiles();
 		elfs = new ArrayList<Elf>();
+		int score = 0;
 		//
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(file1));
-			Elf currentElf = new Elf();
-			elfs.add(currentElf);
+			
 			String s;
 			while((s = reader.readLine()) != null) {
-				if(s.equals("")) {
-					currentElf = new Elf();
-					elfs.add(currentElf);
-				}else {
-					currentElf.addCalories(Integer.parseInt(s));
-				}
+				score+= rockPaperScisorScore(s);
 			}
-			
-			
-			for(int i = 0;i<3;i++) {
-				for(int i2 = i ; i2 < elfs.size(); i2++) 
-				{
-					if(elfs.get(i).getCalories() < elfs.get(i2).getCalories()) {
-						change(i,i2);
-					}
-				}
-			}
-			
-			System.out.println(elfs.get(0).getCalories()+elfs.get(1).getCalories()+elfs.get(2).getCalories());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		System.out.println(score);
+	}
+	
+	/**
+	 * 
+	 * @param p - String with the following syntax play opponent+" "+response
+	 * @return score for this round
+	 */
+	private static int rockPaperScisorScore(String p) {
+		String[] play = p.split(" ");
+		int outPut = 0;
+		switch (play[1]) {
+		case "X":
+			outPut+=1;
+			if(play[0].equals("C"))
+				outPut += 6;
+			else if(play[0].equals("A"))
+				outPut += 3;
+			break;
+		case "Y":
+			outPut+=2;
+			if(play[0].equals("A"))
+				outPut += 6;
+			else if(play[0].equals("B"))
+				outPut += 3;
+			break;
+		case "Z":
+			outPut+=3;
+			if(play[0].equals("B"))
+				outPut += 6;
+			else if(play[0].equals("C"))
+				outPut += 3;
+			break;
+			}
+			
+		
+		return outPut;
 	}
 	
 	private static void change(int first, int second) {

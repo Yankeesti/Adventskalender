@@ -19,7 +19,7 @@ public class Main {
 			
 			String s;
 			while((s = reader.readLine()) != null) {
-				score+= rockPaperScisorScore(s);
+				score+= rockPaperScisorScorePart2(s.split(" "));
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -33,8 +33,8 @@ public class Main {
 	 * @param p - String with the following syntax play opponent+" "+response
 	 * @return score for this round
 	 */
-	private static int rockPaperScisorScore(String p) {
-		String[] play = p.split(" ");
+	private static int rockPaperScisorScore(String[] p) {
+		String[] play = p;
 		int outPut = 0;
 		switch (play[1]) {
 		case "X":
@@ -63,6 +63,54 @@ public class Main {
 		
 		return outPut;
 	}
+	
+	private static int rockPaperScisorScorePart2(String[] p) {
+		if(p[0].equals("A")) {//Rock
+			switch (p[1]) {
+			case "X": // lose
+				p[1] = "Z"; //Scicor
+				return rockPaperScisorScore(p);
+			case "Y":	//draw
+				p[1] = "X"; //Rock
+				return rockPaperScisorScore(p);
+			case "Z": // Win
+				p[1] = "Y"; //Paper
+				return rockPaperScisorScore(p);
+			}
+		}
+		
+		if(p[0].equals("B")) {//Paper
+			switch (p[1]) {
+			case "X": // lose
+				p[1] = "X"; //Rock
+				return rockPaperScisorScore(p);
+			case "Y":	//draw
+				p[1] = "Y"; //paper
+				return rockPaperScisorScore(p);
+			case "Z": // Win
+				p[1] = "Z"; //Scicor
+				return rockPaperScisorScore(p);
+			}
+		}
+		
+		if(p[0].equals("C")) {//Scicor
+			switch (p[1]) {
+			case "X": // lose
+				p[1] = "Y"; //Paper
+				return rockPaperScisorScore(p);
+			case "Y":	//draw
+				p[1] = "Z"; //Scicor
+				return rockPaperScisorScore(p);
+			case "Z": // Win
+				p[1] = "X"; //Rock
+				return rockPaperScisorScore(p);
+			}
+		}
+		
+		return 0;
+	}
+	
+
 	
 	private static void change(int first, int second) {
 		Elf temp = elfs.get(first).clone();

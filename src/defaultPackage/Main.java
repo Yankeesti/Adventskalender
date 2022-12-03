@@ -8,24 +8,52 @@ import java.util.ArrayList;
 
 public class Main {
 	static File folder1,file1;
-	static ArrayList<Elf>  elfs;
+	static ArrayList<Rucksack>  rucksaecke;
 	public static void main(String[] args) throws IOException {
 		loadFiles();
-		elfs = new ArrayList<Elf>();
-		int score = 0;
-		//
+		rucksaecke = new ArrayList<Rucksack>();
+		String[] data = getData(file1);
+		for(String p:data) {
+			rucksaecke.add(new Rucksack(p));
+		}
+		int outPut = 0;
+		for(int i = 0; i<rucksaecke.size();i++) {
+			outPut += rucksaecke.get(i).findDouble();
+		}
+		
+		System.out.println(outPut);
+	}
+	
+	private static String[] getData(File f) {
+		ArrayList<String> data = new ArrayList<String>();
+		BufferedReader reader = null; 
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(file1));
+			reader = new BufferedReader(new FileReader(file1));
 			
 			String s;
 			while((s = reader.readLine()) != null) {
-				score+= rockPaperScisorScorePart2(s.split(" "));
+				data.add(s);
 			}
+			reader.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}catch (IOException e) {
+			
+		}finally {
+			try {
+				reader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		System.out.println(score);
+		
+		String[] outPut = new String[data.size()];
+		for(int i = 0; i<outPut.length;i++) {
+			outPut[i] = data.get(i);
+		} 
+		return outPut;
 	}
 	
 	/**
@@ -108,17 +136,6 @@ public class Main {
 		}
 		
 		return 0;
-	}
-	
-
-	
-	private static void change(int first, int second) {
-		Elf temp = elfs.get(first).clone();
-		
-		elfs.set(first, elfs.get(second));
-		
-		elfs.set(second, temp);
-		
 	}
 
 	private static void loadFiles() {

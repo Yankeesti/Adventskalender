@@ -8,17 +8,20 @@ import java.util.ArrayList;
 
 public class Main {
 	static File folder1,file1;
-	static ArrayList<Rucksack>  rucksaecke;
+	static ArrayList<Group>  groups;
 	public static void main(String[] args) throws IOException {
 		loadFiles();
-		rucksaecke = new ArrayList<Rucksack>();
+		groups = new ArrayList<Group>();
 		String[] data = getData(file1);
-		for(String p:data) {
-			rucksaecke.add(new Rucksack(p));
-		}
 		int outPut = 0;
-		for(int i = 0; i<rucksaecke.size();i++) {
-			outPut += rucksaecke.get(i).findDouble();
+		for(int i = 0; i<data.length;i++) {
+			String[] groupData = new String[3];
+			for(int i2 = 0; i2< 3;i2++) {
+				groupData[i2] = data[i+i2];
+			}
+			i += 2;
+			Group p = new Group(groupData);
+			outPut+= p.findBatch();
 		}
 		
 		System.out.println(outPut);

@@ -16,9 +16,9 @@ public class Group extends Rucksack{
 		data[2] = rucksaecke[1].getData();
 		
 		for(int iOne = 0; iOne <data[0].length();iOne++) {
-			for(int iTwo = 0; iTwo <data[0].length();iTwo++) {
+			for(int iTwo = 0; iTwo <data[1].length();iTwo++) {
 				if(data[0].charAt(iOne) == data[1].charAt(iTwo))
-				for(int iThree = 0; iThree <data[0].length();iThree++) {
+				for(int iThree = 0; iThree <data[2].length();iThree++) {
 					if(data[1].charAt(iTwo) == data[2].charAt(iThree)) {
 						return getValue(data[1].charAt(iTwo));
 					}

@@ -17,7 +17,7 @@ public class Main {
 		int outPut = 0;
 		for(int i = 0; i<data.length;i++) {
 			pairs[i] = new CleaningPair(data[i]);
-			if(pairs[i].fullyContaines())
+			if(pairs[i].overLaping())
 				outPut++;
 		}
 		

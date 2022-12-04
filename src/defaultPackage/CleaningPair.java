@@ -20,4 +20,25 @@ public class CleaningPair {
 		return false;
 
 	}
+	
+	public boolean overLaping() {
+		//second elf starts in the range of first elf
+		if(	sections[0][0]<= sections[1][0] && 
+			sections[0][1]>= sections[1][0])
+			return true;
+		//second eld ends in the range of first elf
+		if(	sections[0][1]>= sections[1][1] && 
+				sections[0][0]<= sections[1][1])
+				return true;
+		
+		//second elf starts in the range of first elf
+		if(	sections[1][0]<= sections[0][0] && 
+			sections[1][1]>= sections[0][0])
+			return true;
+		//second eld ends in the range of first elf
+		if(	sections[1][1]>= sections[0][1] && 
+			sections[1][0]<= sections[0][1])
+				return true;
+		return false;
+	}
 }

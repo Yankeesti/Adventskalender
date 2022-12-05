@@ -19,6 +19,15 @@ public class Stack {
 		public void add(char p) {
 			stack.append(p);
 		}
+		
+		public void move2(int amount, Stack destination) {
+			for(int i = amount; i>0;i--) {
+				char temp = stack.charAt(stack.length()-i);
+				destination.add(temp);
+			}
+			stack.delete(stack.length()-amount, stack.length());
+		}
+		
 
 		public char getTop() {
 			return stack.charAt(stack.length()-1);

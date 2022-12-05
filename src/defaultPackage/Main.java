@@ -44,7 +44,7 @@ public class Main {
 			int amount = Integer.parseInt(dataSplitted[1]);
 			int startStack = Integer.parseInt(dataSplitted[3])-1;
 			int endStack = Integer.parseInt(dataSplitted[5])-1;
-			stacks[startStack].move(amount, stacks[endStack]);
+			stacks[startStack].move2(amount, stacks[endStack]);
 		}
 		
 		

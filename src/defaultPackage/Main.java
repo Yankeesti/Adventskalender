@@ -8,20 +8,49 @@ import java.util.ArrayList;
 
 public class Main {
 	static File folder1,file1;
-	static CleaningPair[] pairs;
 	public static void main(String[] args) throws IOException {
 		loadFiles();
 		
 		String[] data = getData(file1);
-		pairs = new CleaningPair[data.length];
-		int outPut = 0;
-		for(int i = 0; i<data.length;i++) {
-			pairs[i] = new CleaningPair(data[i]);
-			if(pairs[i].overLaping())
-				outPut++;
+		Stack[] stacks = new Stack[9];
+		StringBuffer[] stackInput = new StringBuffer[9];
+		for(int i = 0 ; i<9; i++) {
+			stackInput[i] = new StringBuffer();
 		}
 		
-		System.out.println(outPut);
+		int index = 0;
+		
+		while(data[index].charAt(1) != '1') {
+			String[] dataSplitted = data[index].split(" ");
+			int tempIndex = 1; // index to read out items
+			for(int i = 0; i<9;i++) {
+				char temp = data[index].charAt(tempIndex);
+				if(temp != ' ')
+					stackInput[i].append(temp);
+					tempIndex+=4;
+			}
+			index++;
+		}
+		
+		for(int i = 0; i< stacks.length;i++) {
+			stackInput[i].reverse();
+			stacks[i] = new Stack(stackInput[i].toString());
+		}
+		index += 2;
+		
+		//Befehle ausführen
+		for(int i = index; i<data.length;i++) {
+			String[] dataSplitted = data[i].split(" ");
+			int amount = Integer.parseInt(dataSplitted[1]);
+			int startStack = Integer.parseInt(dataSplitted[3])-1;
+			int endStack = Integer.parseInt(dataSplitted[5])-1;
+			stacks[startStack].move(amount, stacks[endStack]);
+		}
+		
+		
+		for(Stack p: stacks) 
+			System.out.print(p.getTop());
+		
 	}
 	
 	private static String[] getData(File f) {

@@ -12,44 +12,27 @@ public class Main {
 		loadFiles();
 		
 		String[] data = getData(file1);
-		Stack[] stacks = new Stack[9];
-		StringBuffer[] stackInput = new StringBuffer[9];
-		for(int i = 0 ; i<9; i++) {
-			stackInput[i] = new StringBuffer();
-		}
 		
-		int index = 0;
-		
-		while(data[index].charAt(1) != '1') {
-			String[] dataSplitted = data[index].split(" ");
-			int tempIndex = 1; // index to read out items
-			for(int i = 0; i<9;i++) {
-				char temp = data[index].charAt(tempIndex);
-				if(temp != ' ')
-					stackInput[i].append(temp);
-					tempIndex+=4;
+		for(int i = 0; i< data[0].length();i++) {
+			char[] sequenze = {data[0].charAt(i),data[0].charAt(i+1),data[0].charAt(i+2),data[0].charAt(i+3)};
+			if(uniqueCharachters(sequenze)) {
+				i +=4;
+				System.out.println(""+ i);
+				break;
 			}
-			index++;
 		}
 		
-		for(int i = 0; i< stacks.length;i++) {
-			stackInput[i].reverse();
-			stacks[i] = new Stack(stackInput[i].toString());
+	}
+	
+	private static boolean uniqueCharachters(char[] charachters) {
+		for(int i = 0; i< charachters.length;i++) {
+			for(int i2 = i+1;i2<charachters.length;i2++) {
+				if(charachters[i] == charachters[i2]) {
+					return false;
+				}
+			}
 		}
-		index += 2;
-		
-		//Befehle ausführen
-		for(int i = index; i<data.length;i++) {
-			String[] dataSplitted = data[i].split(" ");
-			int amount = Integer.parseInt(dataSplitted[1]);
-			int startStack = Integer.parseInt(dataSplitted[3])-1;
-			int endStack = Integer.parseInt(dataSplitted[5])-1;
-			stacks[startStack].move2(amount, stacks[endStack]);
-		}
-		
-		
-		for(Stack p: stacks) 
-			System.out.print(p.getTop());
+		return true;
 		
 	}
 	

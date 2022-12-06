@@ -13,12 +13,16 @@ public class Main {
 		
 		String[] data = getData(file1);
 		
+		end:
 		for(int i = 0; i< data[0].length();i++) {
-			char[] sequenze = {data[0].charAt(i),data[0].charAt(i+1),data[0].charAt(i+2),data[0].charAt(i+3)};
+			char [] sequenze = new char[14];
+			for(int i2 = 0; i2<14;i2++) {
+				sequenze[i2] = data[0].charAt(i+i2);
+				
+			}
 			if(uniqueCharachters(sequenze)) {
-				i +=4;
-				System.out.println(""+ i);
-				break;
+				System.out.println(i+14);
+				break end;
 			}
 		}
 		

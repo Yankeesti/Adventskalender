@@ -8,36 +8,51 @@ import java.util.ArrayList;
 
 public class Main {
 	static File folder1,file1;
+	static Directory currentDirectory;
+	static final Directory outermost = new Directory("/",null);
 	public static void main(String[] args) throws IOException {
 		loadFiles();
 		
+		currentDirectory = outermost;
 		String[] data = getData(file1);
-		
-		end:
-		for(int i = 0; i< data[0].length();i++) {
-			char [] sequenze = new char[14];
-			for(int i2 = 0; i2<14;i2++) {
-				sequenze[i2] = data[0].charAt(i+i2);
-				
-			}
-			if(uniqueCharachters(sequenze)) {
-				System.out.println(i+14);
-				break end;
-			}
+		for(String p: data) {
+			recunstructor(p);
+		}
+		Directory[] directorys = outermost.getSubDirectorys();
+		int temp = 0;
+		for(Directory p: directorys) {
+			if(p.getSize() < 100000)
+				temp += p.getSize();
 		}
 		
+		System.out.println(temp);
 	}
 	
-	private static boolean uniqueCharachters(char[] charachters) {
-		for(int i = 0; i< charachters.length;i++) {
-			for(int i2 = i+1;i2<charachters.length;i2++) {
-				if(charachters[i] == charachters[i2]) {
-					return false;
+	/**
+	 * reconstructs the File system from the terminal outPut
+	 * @param terminalOutPut
+	 */
+	private static void recunstructor(String terminalOutPut) {
+		String[] dataSplitted = terminalOutPut.split(" ");
+		if(dataSplitted[0].equals("$")){//Command
+			if(dataSplitted[1].equals("cd")) {//move
+				if(dataSplitted[2].equals("..")) {//move out
+					if(currentDirectory != outermost)
+					currentDirectory = currentDirectory.getParent();
+				}else if(dataSplitted[2].equals("/")) {//back to outermost
+					currentDirectory = outermost;
+				}else {// move in
+					currentDirectory = currentDirectory.getDirectory(dataSplitted[2]);
 				}
 			}
+		}else {//directory/File
+			if(dataSplitted[0].equals("dir")) {
+				currentDirectory.getDirectory(dataSplitted[1]);
+			}else {
+				currentDirectory.add(new defaultPackage.File(dataSplitted[1], Integer.parseInt(dataSplitted[0])));
+			}
 		}
-		return true;
-		
+			
 	}
 	
 	private static String[] getData(File f) {

@@ -12,20 +12,33 @@ public class Main {
 	static final Directory outermost = new Directory("/",null);
 	public static void main(String[] args) throws IOException {
 		loadFiles();
+		int totalDiscSpace = 70000000;
+		int  updateSpace = 30000000;
 		
 		currentDirectory = outermost;
 		String[] data = getData(file1);
 		for(String p: data) {
 			recunstructor(p);
 		}
+		
+		int spaceNeeded = updateSpace-(totalDiscSpace - outermost.getSize());
 		Directory[] directorys = outermost.getSubDirectorys();
-		int temp = 0;
-		for(Directory p: directorys) {
-			if(p.getSize() < 100000)
-				temp += p.getSize();
+		
+		int indexToDelete = -1;
+		
+		for(int i = 0; i< directorys.length;i++) {
+			int tempDSpace = directorys[i].getSize();
+			if(tempDSpace >= spaceNeeded) {
+				if(indexToDelete == -1) {
+					indexToDelete = i;
+				}else {
+					if(tempDSpace < directorys[indexToDelete].getSize())
+						indexToDelete = i;
+				}
+			}
 		}
 		
-		System.out.println(temp);
+		System.out.println(directorys[indexToDelete].getSize());
 	}
 	
 	/**

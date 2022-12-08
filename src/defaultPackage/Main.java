@@ -8,64 +8,137 @@ import java.util.ArrayList;
 
 public class Main {
 	static File folder1,file1;
-	static Directory currentDirectory;
-	static final Directory outermost = new Directory("/",null);
 	public static void main(String[] args) throws IOException {
 		loadFiles();
-		int totalDiscSpace = 70000000;
-		int  updateSpace = 30000000;
 		
-		currentDirectory = outermost;
 		String[] data = getData(file1);
-		for(String p: data) {
-			recunstructor(p);
-		}
+		int[][] trees = new int[data[0].length()][data.length];
 		
-		int spaceNeeded = updateSpace-(totalDiscSpace - outermost.getSize());
-		Directory[] directorys = outermost.getSubDirectorys();
+		//fill array
 		
-		int indexToDelete = -1;
-		
-		for(int i = 0; i< directorys.length;i++) {
-			int tempDSpace = directorys[i].getSize();
-			if(tempDSpace >= spaceNeeded) {
-				if(indexToDelete == -1) {
-					indexToDelete = i;
-				}else {
-					if(tempDSpace < directorys[indexToDelete].getSize())
-						indexToDelete = i;
-				}
+		for(int y = 0; y<data.length;y++) {
+			for(int x = 0; x < data[0].length();x++) {
+				trees[y][x] = Integer.parseInt(""+data[y].charAt(x));
 			}
 		}
 		
-		System.out.println(directorys[indexToDelete].getSize());
+		int highestScore = 0;
+		for(int y = 0; y<data.length;y++) {
+			for(int x = 0; x < data[0].length();x++) {
+				int[] location = {y,x};
+				int score = scenicScore(location, trees);
+				if(score > highestScore)
+					highestScore = score;
+			}
+		}
+		
+		System.out.println(highestScore);
+		
 	}
 	
-	/**
-	 * reconstructs the File system from the terminal outPut
-	 * @param terminalOutPut
-	 */
-	private static void recunstructor(String terminalOutPut) {
-		String[] dataSplitted = terminalOutPut.split(" ");
-		if(dataSplitted[0].equals("$")){//Command
-			if(dataSplitted[1].equals("cd")) {//move
-				if(dataSplitted[2].equals("..")) {//move out
-					if(currentDirectory != outermost)
-					currentDirectory = currentDirectory.getParent();
-				}else if(dataSplitted[2].equals("/")) {//back to outermost
-					currentDirectory = outermost;
-				}else {// move in
-					currentDirectory = currentDirectory.getDirectory(dataSplitted[2]);
+	private static int scenicScore(int[]treeLocation, int[][] treeArray) {
+		int treeHight = treeArray[treeLocation[0]][treeLocation[1]];
+		int[] viewingDistances = new int[4]; //[0]=North [1]=South [2]=West [3]=East
+		
+		//North
+		if(treeLocation[0] == 0) //Tree is at Top end
+			return 0;
+		else
+			for(int y = treeLocation[0]-1 ; y>= 0;y--) {
+				if(treeArray[y][treeLocation[1]]>=treeHight) {
+					viewingDistances[0] ++;
+					break;
 				}
+				viewingDistances[0] ++;
 			}
-		}else {//directory/File
-			if(dataSplitted[0].equals("dir")) {
-				currentDirectory.getDirectory(dataSplitted[1]);
-			}else {
-				currentDirectory.add(new defaultPackage.File(dataSplitted[1], Integer.parseInt(dataSplitted[0])));
+		
+		//South
+				if(treeLocation[0] == treeArray.length-1) //Tree is at bottom end
+					return 0;
+				else
+					for(int y = treeLocation[0]+1 ; y<treeArray.length ;y++) {
+						if(treeArray[y][treeLocation[1]]>=treeHight) {
+							viewingDistances[1] ++;
+							break;
+						}
+						viewingDistances[1] ++;
+					}
+				
+		//West
+		if(treeLocation[1] == 0) //Tree is at Left end
+			return 0;
+		else
+			for(int x = treeLocation[1]-1 ; x>= 0;x--) {
+				if(treeArray[treeLocation[0]][x]>=treeHight) {
+					viewingDistances[2] ++;
+					break;
+				}
+				viewingDistances[2] ++;
 			}
+		
+		//East
+				if(treeLocation[1] == treeArray[0].length-1) //Tree is at bottom
+					return 0;
+				else
+					for(int x = treeLocation[1]+1 ; x<treeArray.length ;x++) {
+						if(treeArray[treeLocation[0]][x]>=treeHight) {
+							viewingDistances[3] ++;
+							break;
+						}
+						viewingDistances[3] ++;
+					}	
+				
+				int outPut = 1;
+				for(int p : viewingDistances)
+					outPut*= p;
+				return outPut;
+		
+	}
+	
+	private static boolean visible(int[] treeLocation, int[][] treeArray) {
+		int treeHight = treeArray[treeLocation[0]][treeLocation[1]];
+		
+		if(treeLocation[0] == 0 || treeLocation[0] == treeArray.length-1) {
+			return true;
 		}
-			
+		
+		if(treeLocation[1] == 0 || treeLocation[1] == treeArray[0].length-1) {
+			return true;
+		}
+		
+		//North
+		for(int y = 0; y<treeLocation[0] ; y++) {
+			if(treeArray[y][treeLocation[1]] >= treeHight)
+				break;
+			if(y == treeLocation[0]-1)
+				return true;
+		}
+		
+		//south
+		for(int y = treeArray.length-1; y>treeLocation[0] ; y--) {
+			if(treeArray[y][treeLocation[1]] >= treeHight)
+				break;
+			if(y == treeLocation[0]+1)
+				return true;
+		}
+		
+		//West
+		for(int x = 0; x<treeLocation[1] ; x++) {
+			if(treeArray[treeLocation[0]][x] >= treeHight)
+				break;
+			if(x == treeLocation[1]-1)
+				return true;
+		}
+		
+		//East
+		for(int x = treeArray[0].length-1; x>treeLocation[1] ; x--) {
+			if(treeArray[treeLocation[0]][x] >= treeHight)
+				break;
+			if(x == treeLocation[1]+1)
+				return true;
+		}
+		
+		return false;
 	}
 	
 	private static String[] getData(File f) {

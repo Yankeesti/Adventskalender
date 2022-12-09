@@ -8,34 +8,107 @@ import java.util.ArrayList;
 
 public class Main {
 	static File folder1,file1;
+	static ArrayList<int[]> positionsVisitedByTail;//Y|X
+	static int[] positionHead,positionTail;//Y|X
 	public static void main(String[] args) throws IOException {
 		loadFiles();
+		positionHead = new int[2];
+		positionHead[0] = 0;
+		positionHead[1] = 0;
+		
+		positionTail = new int[2];
+		positionTail[0] = 0;
+		positionTail[1] = 0;
+		
+		positionsVisitedByTail = new ArrayList<int[]>();
+		int[] temp = {0,0};
+		positionsVisitedByTail.add(temp);
 		
 		String[] data = getData(file1);
-		int[][] trees = new int[data[0].length()][data.length];
 		
-		//fill array
-		
-		for(int y = 0; y<data.length;y++) {
-			for(int x = 0; x < data[0].length();x++) {
-				trees[y][x] = Integer.parseInt(""+data[y].charAt(x));
+		for(String order: data) {
+			String[] orderSplitted = order.split(" ");
+			for(int i = 0; i< Integer.parseInt(orderSplitted[1]);i++) {
+				followOrder(orderSplitted[0]);
 			}
 		}
-		
-		int highestScore = 0;
-		for(int y = 0; y<data.length;y++) {
-			for(int x = 0; x < data[0].length();x++) {
-				int[] location = {y,x};
-				int score = scenicScore(location, trees);
-				if(score > highestScore)
-					highestScore = score;
-			}
-		}
-		
-		System.out.println(highestScore);
+		System.out.println(positionsVisitedByTail.size());
 		
 	}
 	
+	/**
+	 * moves head according to the order and moves tail according to tail movement, also adds tails position to postitionsvisited by tail
+	 * if this position wasn't visited yet just one move per order
+	 */
+	private static void followOrder(String order) {
+		switch(order) {
+		 //move head
+		 case "R":
+				 positionHead[1]++;
+			break;
+		 
+		case "L":
+				 positionHead[1]--;
+			 break;
+		 
+		case "U":
+				 positionHead[0]++;
+			 break;
+			 
+		case "D":
+				 positionHead[0]--;
+			 break;
+		}
+		
+		//move Tail
+		if(Math.abs(positionHead[0]-positionTail[0]) > 1 || Math.abs(positionHead[1]-positionTail[1]) > 1){//head and tail don't touch each other
+			if(positionHead[0] == positionTail[0]) { //move left or right
+				if(positionHead[1] > positionTail[1]) //move right
+					positionTail[1]++;
+				else if(positionHead[1] < positionTail[1])//move left
+					positionTail[1]--;
+			}else if(positionHead[1] == positionTail[1]) { //move up or down
+				if(positionHead[0] > positionTail[0]) //move right
+					positionTail[0]++;
+				else if(positionHead[0] < positionTail[0])//move left
+					positionTail[0]--;
+			}else {//move verticaly
+				if(positionHead[0] > positionTail[0])//move up
+					positionTail[0] ++;
+				else if(positionHead[0] < positionTail[0])//move down
+				positionTail[0] --;
+				
+				if(positionHead[1] > positionTail[1])//move right
+					positionTail[1] ++;
+				else if(positionHead[1] < positionTail[1])//move left
+				positionTail[1] --;
+				
+			}
+			addToPositionsList(positionTail);
+		}
+		 
+		 
+	}
+	
+	/**
+	 * adds the position when there is no equivalent of this position in the list
+	 * @param positionTail2
+	 */
+	private static void addToPositionsList(int[] positionTail2) {
+		boolean add = true;
+		for(int i = 0; i< positionsVisitedByTail.size();i++) {
+			int[] temp = positionsVisitedByTail.get(i);
+			if(temp[0] == positionTail2[0] && temp[1] == positionTail2[1]) {
+				add = false;
+				break;
+			}
+		}
+		if(add) {
+			int[] temp = {positionTail2[0],positionTail2[1]};
+			positionsVisitedByTail.add(temp);}
+		
+	}
+
 	private static int scenicScore(int[]treeLocation, int[][] treeArray) {
 		int treeHight = treeArray[treeLocation[0]][treeLocation[1]];
 		int[] viewingDistances = new int[4]; //[0]=North [1]=South [2]=West [3]=East

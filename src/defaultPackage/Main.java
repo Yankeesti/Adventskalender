@@ -9,16 +9,15 @@ import java.util.ArrayList;
 public class Main {
 	static File folder1,file1;
 	static ArrayList<int[]> positionsVisitedByTail;//Y|X
-	static int[] positionHead,positionTail;//Y|X
+	static int[][] ropePosition;
 	public static void main(String[] args) throws IOException {
 		loadFiles();
-		positionHead = new int[2];
-		positionHead[0] = 0;
-		positionHead[1] = 0;
+		ropePosition = new int[10][2];
+		for(int i = 0; i< ropePosition.length;i++) {
+			ropePosition[i][0] = 0;
+			ropePosition[i][1] = 0;
+		}
 		
-		positionTail = new int[2];
-		positionTail[0] = 0;
-		positionTail[1] = 0;
 		
 		positionsVisitedByTail = new ArrayList<int[]>();
 		int[] temp = {0,0};
@@ -44,67 +43,71 @@ public class Main {
 		switch(order) {
 		 //move head
 		 case "R":
-				 positionHead[1]++;
+				 ropePosition[0][1]++;
 			break;
 		 
 		case "L":
-				 positionHead[1]--;
+				 ropePosition[0][1]--;
 			 break;
 		 
 		case "U":
-				 positionHead[0]++;
+				 ropePosition[0][0]++;
 			 break;
 			 
 		case "D":
-				 positionHead[0]--;
+				 ropePosition[0][0]--;
 			 break;
 		}
 		
-		//move Tail
-		if(Math.abs(positionHead[0]-positionTail[0]) > 1 || Math.abs(positionHead[1]-positionTail[1]) > 1){//head and tail don't touch each other
-			if(positionHead[0] == positionTail[0]) { //move left or right
-				if(positionHead[1] > positionTail[1]) //move right
-					positionTail[1]++;
-				else if(positionHead[1] < positionTail[1])//move left
-					positionTail[1]--;
-			}else if(positionHead[1] == positionTail[1]) { //move up or down
-				if(positionHead[0] > positionTail[0]) //move right
-					positionTail[0]++;
-				else if(positionHead[0] < positionTail[0])//move left
-					positionTail[0]--;
-			}else {//move verticaly
-				if(positionHead[0] > positionTail[0])//move up
-					positionTail[0] ++;
-				else if(positionHead[0] < positionTail[0])//move down
-				positionTail[0] --;
-				
-				if(positionHead[1] > positionTail[1])//move right
-					positionTail[1] ++;
-				else if(positionHead[1] < positionTail[1])//move left
-				positionTail[1] --;
-				
+		for(int i = 1;i<ropePosition.length;i++) {
+			int[] positionforeKnot = ropePosition[i-1];
+			int[] knotPosition = ropePosition[i];
+			//move Tail
+			if(Math.abs(positionforeKnot[0]-knotPosition[0]) > 1 || Math.abs(positionforeKnot[1]-knotPosition[1]) > 1){//head and tail don't touch each other
+				if(positionforeKnot[0] == knotPosition[0]) { //move left or right
+					if(positionforeKnot[1] > knotPosition[1]) //move right
+						knotPosition[1]++;
+					else if(positionforeKnot[1] < knotPosition[1])//move left
+						knotPosition[1]--;
+				}else if(positionforeKnot[1] == knotPosition[1]) { //move up or down
+					if(positionforeKnot[0] > knotPosition[0]) //move right
+						knotPosition[0]++;
+					else if(positionforeKnot[0] < knotPosition[0])//move left
+						knotPosition[0]--;
+				}else {//move verticaly
+					if(positionforeKnot[0] > knotPosition[0])//move up
+						knotPosition[0] ++;
+					else if(positionforeKnot[0] < knotPosition[0])//move down
+					knotPosition[0] --;
+					
+					if(positionforeKnot[1] > knotPosition[1])//move right
+						knotPosition[1] ++;
+					else if(positionforeKnot[1] < knotPosition[1])//move left
+					knotPosition[1] --;
+					
+				}
+				if(i == 9)
+				addToPositionsList(ropePosition[i]);
 			}
-			addToPositionsList(positionTail);
 		}
-		 
 		 
 	}
 	
 	/**
 	 * adds the position when there is no equivalent of this position in the list
-	 * @param positionTail2
+	 * @param ropePosition[9]2
 	 */
-	private static void addToPositionsList(int[] positionTail2) {
+	private static void addToPositionsList(int[] tailPostion) {
 		boolean add = true;
 		for(int i = 0; i< positionsVisitedByTail.size();i++) {
 			int[] temp = positionsVisitedByTail.get(i);
-			if(temp[0] == positionTail2[0] && temp[1] == positionTail2[1]) {
+			if(temp[0] == tailPostion[0] && temp[1] == tailPostion[1]) {
 				add = false;
 				break;
 			}
 		}
 		if(add) {
-			int[] temp = {positionTail2[0],positionTail2[1]};
+			int[] temp = {tailPostion[0],tailPostion[1]};
 			positionsVisitedByTail.add(temp);}
 		
 	}

@@ -26,7 +26,7 @@ public class Main {
 			line +=2;
 		}
 		
-		for(int i = 0; i<20;i++) {
+		for(int i = 0; i<10000;i++) {
 			for(int monkey = 0; monkey< monkeys.length;monkey++) {
 				monkeys[monkey].turn(monkeys);
 			}
@@ -36,6 +36,38 @@ public class Main {
 			System.out.println("Monkey "+i+" inspected items "+monkeys[i].inspections+" times");
 		}
 		
+		System.out.println(getMonkeyBusines(monkeys));
+		
+	}
+	
+	private static long getMonkeyBusines(Monkey[] monkeys) {
+		int highestIndex = -1;
+		int secondhighestIndex = -1;
+		
+		for(int i = 0; i< monkeys.length;i++) {
+			if(highestIndex == -1) {
+				highestIndex = i;
+				continue;
+			}else if(secondhighestIndex == -1) {
+				if(monkeys[highestIndex].inspections < monkeys[i].inspections) {
+					secondhighestIndex = highestIndex+0;
+					highestIndex = i;
+					continue;
+				}else
+					secondhighestIndex = i;
+			}else {
+				if(monkeys[secondhighestIndex].inspections < monkeys[i].inspections) {
+					if(monkeys[highestIndex].inspections < monkeys[i].inspections) {
+						secondhighestIndex = highestIndex+0;
+						highestIndex = i;
+						continue;
+					}else
+					secondhighestIndex = i;
+				}
+			}
+		}
+		long outPut = (long)(monkeys[highestIndex].inspections)*(long)(monkeys[secondhighestIndex].inspections);
+		return outPut;
 	}
 	
 

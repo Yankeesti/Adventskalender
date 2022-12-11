@@ -3,17 +3,17 @@ package defaultPackage;
 import java.util.ArrayList;
 
 public class Monkey {
-	ArrayList<Integer> itemWorryLevel;
+	ArrayList<WorryLevel> itemWorryLevel;
 	int test; //devidable by this number
 	int[] testThrow;//[0] the Monkey to throw to when test true [1] the monkey to throw to when test false
 	String[] operation;
 	int inspections;
 	public Monkey(String[] data) {
-		itemWorryLevel = new ArrayList<Integer>();
+		itemWorryLevel = new ArrayList<WorryLevel>();
 		String[] itemWorryLevleString = data[0].split(": ");
 		itemWorryLevleString = itemWorryLevleString[1].split(", ");
 		for(String p: itemWorryLevleString) {
-			itemWorryLevel.add(Integer.parseInt(p));
+			itemWorryLevel.add(new WorryLevel(Integer.parseInt(p)));
 		}
 		
 		operation = data[1].split(": ")[1].split(" ");
@@ -29,43 +29,42 @@ public class Monkey {
 	
 	public void turn(Monkey[] monkeys) {
 		for(int i = 0; i< itemWorryLevel.size();i++) {
-			int item = itemWorryLevel.get(i);
-			item = operation(item);
-			if(item % test == 0) {
+			WorryLevel item = itemWorryLevel.get(i);
+			operation(item);
+			if(item.devisbleBy(test)) {
 				monkeys[testThrow[0]].add(item);
 			}else {
 				monkeys[testThrow[1]].add(item);
 			}
 		}
-		itemWorryLevel = new ArrayList<Integer>();
+		itemWorryLevel = new ArrayList<WorryLevel>();
 	}
 	
-	public void add(int item) {
+	public void add(WorryLevel item) {
 		itemWorryLevel.add(item);
 	}
-	private int operation(int item) {
-		int outPut = item;
+	
+	private void operation(WorryLevel item) {
 		switch(operation[3]) {
 		case "+":
 			if(operation[4].equals("old"))
-				outPut += item;
+				item.multiply(2);
 			else
-				outPut += Integer.parseInt(operation[4]);
+				item.addition(Integer.parseInt(operation[4]));
 			break;
 		case "*":
 			if(operation[4].equals("old"))
-				outPut *= item;
+				item.square();
 			else
-				outPut *= Integer.parseInt(operation[4]);
+				item.multiply(Integer.parseInt(operation[4]));
 			break;
 		}
-		outPut/=3;
+		
 		inspections++;
-		return outPut;
 	}
 	
-	public int[] getItems() {
-		int[] outPut = new int[itemWorryLevel.size()];
+	public WorryLevel[] getItems() {
+		WorryLevel[] outPut = new WorryLevel[itemWorryLevel.size()];
 		for(int i = 0; i<outPut.length;i++) {
 			outPut[i] = itemWorryLevel.get(i);
 		}

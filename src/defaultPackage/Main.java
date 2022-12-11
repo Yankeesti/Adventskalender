@@ -8,109 +8,27 @@ import java.util.ArrayList;
 
 public class Main {
 	static File folder1,file1;
-	static ArrayList<int[]> positionsVisitedByTail;//Y|X
-	static int[][] ropePosition;
 	public static void main(String[] args) throws IOException {
 		loadFiles();
-		ropePosition = new int[10][2];
-		for(int i = 0; i< ropePosition.length;i++) {
-			ropePosition[i][0] = 0;
-			ropePosition[i][1] = 0;
-		}
 		
-		
-		positionsVisitedByTail = new ArrayList<int[]>();
-		int[] temp = {0,0};
-		positionsVisitedByTail.add(temp);
 		
 		String[] data = getData(file1);
+		Cpu p = new Cpu(data);
 		
-		for(String order: data) {
-			String[] orderSplitted = order.split(" ");
-			for(int i = 0; i< Integer.parseInt(orderSplitted[1]);i++) {
-				followOrder(orderSplitted[0]);
+		int cycle = 1;
+		for(int row = 0;row<6;row++) {
+			for(int position = 0; position<40;position++) {
+				int x = p.getXAtCycle(cycle);
+				if(Math.abs(position-x) <=1)
+					System.out.print("#");
+					else
+						System.out.print(".");
+				cycle++;
 			}
+			System.out.println();
 		}
-		System.out.println(positionsVisitedByTail.size());
-		
 	}
 	
-	/**
-	 * moves head according to the order and moves tail according to tail movement, also adds tails position to postitionsvisited by tail
-	 * if this position wasn't visited yet just one move per order
-	 */
-	private static void followOrder(String order) {
-		switch(order) {
-		 //move head
-		 case "R":
-				 ropePosition[0][1]++;
-			break;
-		 
-		case "L":
-				 ropePosition[0][1]--;
-			 break;
-		 
-		case "U":
-				 ropePosition[0][0]++;
-			 break;
-			 
-		case "D":
-				 ropePosition[0][0]--;
-			 break;
-		}
-		
-		for(int i = 1;i<ropePosition.length;i++) {
-			int[] positionforeKnot = ropePosition[i-1];
-			int[] knotPosition = ropePosition[i];
-			//move Tail
-			if(Math.abs(positionforeKnot[0]-knotPosition[0]) > 1 || Math.abs(positionforeKnot[1]-knotPosition[1]) > 1){//head and tail don't touch each other
-				if(positionforeKnot[0] == knotPosition[0]) { //move left or right
-					if(positionforeKnot[1] > knotPosition[1]) //move right
-						knotPosition[1]++;
-					else if(positionforeKnot[1] < knotPosition[1])//move left
-						knotPosition[1]--;
-				}else if(positionforeKnot[1] == knotPosition[1]) { //move up or down
-					if(positionforeKnot[0] > knotPosition[0]) //move right
-						knotPosition[0]++;
-					else if(positionforeKnot[0] < knotPosition[0])//move left
-						knotPosition[0]--;
-				}else {//move verticaly
-					if(positionforeKnot[0] > knotPosition[0])//move up
-						knotPosition[0] ++;
-					else if(positionforeKnot[0] < knotPosition[0])//move down
-					knotPosition[0] --;
-					
-					if(positionforeKnot[1] > knotPosition[1])//move right
-						knotPosition[1] ++;
-					else if(positionforeKnot[1] < knotPosition[1])//move left
-					knotPosition[1] --;
-					
-				}
-				if(i == 9)
-				addToPositionsList(ropePosition[i]);
-			}
-		}
-		 
-	}
-	
-	/**
-	 * adds the position when there is no equivalent of this position in the list
-	 * @param ropePosition[9]2
-	 */
-	private static void addToPositionsList(int[] tailPostion) {
-		boolean add = true;
-		for(int i = 0; i< positionsVisitedByTail.size();i++) {
-			int[] temp = positionsVisitedByTail.get(i);
-			if(temp[0] == tailPostion[0] && temp[1] == tailPostion[1]) {
-				add = false;
-				break;
-			}
-		}
-		if(add) {
-			int[] temp = {tailPostion[0],tailPostion[1]};
-			positionsVisitedByTail.add(temp);}
-		
-	}
 
 	private static int scenicScore(int[]treeLocation, int[][] treeArray) {
 		int treeHight = treeArray[treeLocation[0]][treeLocation[1]];

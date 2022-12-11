@@ -13,20 +13,29 @@ public class Main {
 		
 		
 		String[] data = getData(file1);
-		Cpu p = new Cpu(data);
 		
-		int cycle = 1;
-		for(int row = 0;row<6;row++) {
-			for(int position = 0; position<40;position++) {
-				int x = p.getXAtCycle(cycle);
-				if(Math.abs(position-x) <=1)
-					System.out.print("#");
-					else
-						System.out.print(".");
-				cycle++;
+		Monkey[] monkeys = new Monkey[(int) ((int) data.length/6.75)];
+		int line = 1;
+		for(int i = 0; i< monkeys.length;i++) {
+			String[] dataMonkey = new String[5];
+			for(int dI = 0; dI<dataMonkey.length;dI++) {
+				dataMonkey[dI] = data[line];
+				line++;
 			}
-			System.out.println();
+			monkeys[i] = new Monkey(dataMonkey);
+			line +=2;
 		}
+		
+		for(int i = 0; i<20;i++) {
+			for(int monkey = 0; monkey< monkeys.length;monkey++) {
+				monkeys[monkey].turn(monkeys);
+			}
+		}
+		
+		for(int i = 0; i< monkeys.length;i++) {
+			System.out.println("Monkey "+i+" inspected items "+monkeys[i].inspections+" times");
+		}
+		
 	}
 	
 

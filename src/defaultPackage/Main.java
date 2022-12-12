@@ -14,29 +14,9 @@ public class Main {
 		
 		String[] data = getData(file1);
 		
-		Monkey[] monkeys = new Monkey[(int) ((int) data.length/6.75)];
-		int line = 1;
-		for(int i = 0; i< monkeys.length;i++) {
-			String[] dataMonkey = new String[5];
-			for(int dI = 0; dI<dataMonkey.length;dI++) {
-				dataMonkey[dI] = data[line];
-				line++;
-			}
-			monkeys[i] = new Monkey(dataMonkey);
-			line +=2;
-		}
+		Map map = new Map(data);
 		
-		for(int i = 0; i<10000;i++) {
-			for(int monkey = 0; monkey< monkeys.length;monkey++) {
-				monkeys[monkey].turn(monkeys);
-			}
-		}
-		
-		for(int i = 0; i< monkeys.length;i++) {
-			System.out.println("Monkey "+i+" inspected items "+monkeys[i].inspections+" times");
-		}
-		
-		System.out.println(getMonkeyBusines(monkeys));
+		System.out.println(map.getStepsTillEnd());
 		
 	}
 	

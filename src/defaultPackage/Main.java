@@ -16,7 +16,7 @@ public class Main {
 		
 		Map map = new Map(data);
 		
-		System.out.println(map.getStepsTillEnd());
+		System.out.println(map.getStepsWithbestStartingPoint());
 		
 	}
 	

@@ -8,13 +8,14 @@ public class Map {
 	ArrayList<Position> posWithHeightA;
 	public Map(String[] data) {
 		positions = new Position[data.length][data[0].length()];
-		
+		posWithHeightA = new ArrayList<Position>();
 		for(int y = 0;y<data.length;y++) {
 			for(int x = 0; x < data[0].length();x++) {
 				int[] kord = {y,x};
 				positions[y][x] = new Position(kord, data[y].charAt(x));
-				if(data[y].charAt(x) == 'S')
+				if(data[y].charAt(x) == 'S') {
 					start = positions[y][x];
+					posWithHeightA.add(positions[y][x]);}
 				
 				if(data[y].charAt(x) == 'E')
 					end = positions[y][x];
@@ -24,7 +25,6 @@ public class Map {
 				
 			}
 		}
-		calculateWays(start);
 		
 	}
 	
@@ -32,6 +32,7 @@ public class Map {
 		int steps = Integer.MAX_VALUE;
 		Position startingPoint = null;
 		for(int i = 0; i<posWithHeightA.size();i++) {
+			posWithHeightA.get(i).setSteps(0);
 			calculateWays(posWithHeightA.get(i));
 			if(end.getSteps() < steps) {
 				steps = end.getSteps();
@@ -39,6 +40,11 @@ public class Map {
 			}
 		}
 		return startingPoint;
+	}
+	
+	public int getStepsWithbestStartingPoint() {
+		calculateWays(findBestStartingPoint());
+		return end.getSteps();
 	}
 	
 	public int getStepsTillEnd() {

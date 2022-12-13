@@ -12,26 +12,43 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		loadFiles();
 		String[] data = getData(file1);
-		ArrayList<Package> p = new ArrayList<Package>();
-		
-		for(int i = 0; i<data.length;i +=3) {
-			String[] dataArr = {data[i],data[i+1]};
-			p.add(new Package(dataArr));
-		}
-		long sum = 0;
-		for(int i = 0; i< p.size();i++) {
-			int erg = p.get(i).orderRight();
-			if(erg == 1)
-			sum += i+1;
-			
-			if(erg == 0 || erg == 2) {
-				System.out.println(i+1+" is unschlüssig");
+		ArrayList<List> p = new ArrayList<List>();
+		List dividerOne = new List("[[2]]", null, 0);
+		List dividerTwo = new List("[[6]]", null, 0);
+		p.add(dividerOne);
+		p.add(dividerTwo);
+		for(int i = 0; i<data.length;i++) {
+			if(data[i].length() > 0) {
+				List temp1 = new List(data[i], null, i);
+				p.add(temp1);
 			}
 		}
-		System.out.println(sum);
+		
+		p = sort(p);
+		
+		System.out.println((p.indexOf(dividerTwo)+1)*(p.indexOf(dividerOne)+1));
 	}
 	
 	
+	private static ArrayList<List> sort(ArrayList<List> p) {
+		ArrayList<List> outPut = new ArrayList<List>();
+		
+		while(!p.isEmpty()) {
+			List lowest = p.get(0);
+			int lowestIndex = 0;
+			for(int i = 0; i<p.size();i++) {
+				if(List.orderdRight(lowest, p.get(i)) == -1) {
+					lowest = p.get(i);
+					lowestIndex = i;
+				}
+			}
+			p.remove(lowestIndex);
+			outPut.add(lowest);
+		}
+		return outPut;
+	}
+
+
 	private static String[] getData(File f) {
 		ArrayList<String> data = new ArrayList<String>();
 		BufferedReader reader = null; 

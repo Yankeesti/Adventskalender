@@ -3,28 +3,33 @@ package Day14;
 public class Cave {
 	Structure[][] cave;
 	int minWidth,maxWidth;
+	int plusLeft,plusRight;//what was added to left and rigth side of cafe
 	public Cave(int maxDeepth , int maxWidth, int minWidth) {
+		plusLeft = 150;
+		plusRight = 150;
 		int width = maxWidth-minWidth;
-		cave = new Structure[maxDeepth+1][width+1];
-		this.minWidth = minWidth;
+		cave = new Structure[maxDeepth+3][width+1+plusLeft+plusRight];
+		this.minWidth = minWidth-plusLeft;
 		this.maxWidth = maxWidth;
+		int temp[][] = {{maxDeepth+2,this.minWidth},{maxDeepth+2,maxWidth+plusRight}};
+		setRockLine(temp[0], temp[1]);
 	}
-	
+
 	public void addRocks(String rockData) {
 		String[] rockDataSplitted = rockData.split(" -> ");
 		int positions[][] = new int[rockDataSplitted.length][2];
-		
+
 		for(int i =  0;i<rockDataSplitted.length;i++) {
 			String[] temp = rockDataSplitted[i].split(",");
 			positions[i][0] = Integer.parseInt(temp[1]); // set Y Positon
 			positions[i][1] = Integer.parseInt(temp[0]);// set X Positon
 		}
-		
+
 		for(int i = 0; i<rockDataSplitted.length-1;i++) {
 			setRockLine(positions[i],positions[i+1]);
 		}
 	}
-	
+
 	/**
 	 *  Let's Sand fall from the starting positon Y and X
 	 * @param startY
@@ -36,15 +41,15 @@ public class Cave {
 		int count = 0;
 		while(true) {
 			Sand temp = new Sand(startY,startX,this);
-			
+
 			if(!temp.fall()) {
 				break;
 			}
 			count ++;
 		}
-		return count;
+		return count+1;
 	}
-	
+
 	/**
 	 * sets a Rock Line from posOne to PosTwo
 	 * @param posOne
@@ -69,7 +74,7 @@ public class Cave {
 			}
 		}
 	}
-	
+
 	public void print() {
 			for(int y = 0 ; y<cave.length;y++) {
 			for(int x = 0 ; x< cave[y].length;x++) {
@@ -84,29 +89,31 @@ public class Cave {
 			System.out.println();
 		}
 	}
-	
+
 	public boolean positionFree(int[] pos) {
+		if(pos[0] == cave.length-1)
+			return false;
 		if(pos[0] >= cave.length || pos[0] < 0)
 			return true;
 		if(pos[1] >= cave[0].length || pos[1] < 0)
 			return true;
 		return cave[pos[0]][pos[1]] == null;
 	}
-	
+
 	public boolean positionFree(int y, int x) {
 		int[] temp = {y,x};
 		return positionFree(temp);
 	}
-	
+
 	public void setSand(int[] pos, Sand p) {
 		cave[pos[0]][pos[1]] = p;
 	}
-	
+
 	public boolean inCave(Sand p) {
 		int[] pos = p.getPos();
 		if(pos[0] < cave.length && pos[1] <cave[0].length && pos[1] >= 0 )
 			return true;
 		return false;
 	}
-	
+
 }

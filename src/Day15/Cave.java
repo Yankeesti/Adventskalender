@@ -1,143 +1,93 @@
 package Day15;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import Day14.Rock;
 import Day14.Sand;
 
 public class Cave {
-//	Structure[][] cave;
-	int maxX,maxY,minX,minY;
 	ArrayList<Sensor> sensors;
 	ArrayList<Beacon> beacons;
-	public Cave(int maxX, int maxY,int  minX , int minY) {
-		this.minY = minY;
-		this.maxX = maxX;
-		this.maxY = maxY;
-		this.minX = minX;
-		
-//		cave = new Structure[maxY-minY+1][maxX-minX+1];
-//		for(int y = 0; y<cave.length;y++) {
-//			for(int x = 0; x<cave[0].length;x++) {
-//				cave[y][x] = new Air(x+minX,y+minY);
-//			}
-//		}
+	public Cave() {
 		sensors = new ArrayList<Sensor>();
 		beacons = new ArrayList<Beacon>();
 	}
 	
-	/**
-	 * adds a Sensor and its beacon to the cave,
-	 * also sets beaconPossible in the Sensors Aria according o its data
-	 */
 	public void addSenosor(Sensor p) {
 		//p.setData(this);
 		sensors.add(p);
 		beacons.add(p.getBeacon());
 	}
 	
-//	public void print() {
-//		
-//		for(int y = 0 ; y<cave.length;y++) {	
-//		for(int x = 0 ; x< cave[y].length;x++) {
-//			if(cave[y][x] instanceof Air) {
-//				if(((Air)cave[y][x]).beaconPossible)
-//				System.out.print(".");
-//				else
-//					System.out.print("#");
-//			}else if(cave[y][x] instanceof Sensor){
-//				System.out.print("S");
-//			}else if(cave[y][x] instanceof Beacon){
-//				System.out.print("B");
-//			}
-//		}
-//		System.out.println();
-//	}
-//	}
-	
-	public boolean inCave(int[] pos) {
-			return pos[0] >= minX  && pos[0] <= maxX && pos[1] >= minY && pos[1] <= maxY;
-	}
-
-	
-//	public void set(Structure p, int pos[]) {
-//		cave[pos[1]-minY][pos[0]-minX] = p;
-//	}
-	
-//	public void printLine(int y) {
-//		for(int x = 0; x<cave[y].length;x++) {
-//			if(cave[y][x] instanceof Air) {
-//				if(((Air)cave[y][x]).beaconPossible)
-//				System.out.print(".");
-//				else
-//					System.out.print("#");
-//			}else if(cave[y][x] instanceof Sensor){
-//				System.out.print("S");
-//			}else if(cave[y][x] instanceof Beacon){
-//				System.out.print("B");
-//			}
-//		}
-//		System.out.println();
-//	}
-	
-	/**
-	 * Calculates how many positons there are in line line whre no beacon is possible
-	 * @param line
-	 * @return number of positions where beacon is impossible
-	 */
 	public int getBeaconexcluded(int line) {
-		int count = 0;
-//		for(int x = 0; x<cave[line-minY].length;x++) {
-//			if(cave[line-minY][x] instanceof Sensor) {
-//				count ++;
-//			}else if(cave[line-minY][x] instanceof Air){
-//				if(!((Air)cave[line-minY][x]).beaconPossible)
-//					count ++;
-//			}
-//		}
-		Position:
-		for(int x = -99999999+minX;x<maxX+99999999;x++) {
-			int[] aktPos = {x,line};
-			// check if beacon is ther
-			for(int i =0; i< beacons.size();i++) {
-				int[] beaconPos = beacons.get(i).getPos();
-				if(aktPos[0] == beaconPos [0] && aktPos[1] == beaconPos[1])
-					continue Position;
+		int[] blocked = new int[0];
+		
+		for(int i = 0; i< sensors.size();i++) {
+			Arrays.sort(blocked);
+			blocked = uniteArrays(blocked, sensors.get(i).getBlockedPositions(line));
+		}
+		
+		for(int i = 0; i< beacons.size();i++) {
+			//delete beacons on this line
+			if(beacons.get(i).getPos()[1] == line) {
+				blocked = delete(blocked,beacons.get(i).getPos()[0]);
 			}
-			//check sensor distance
-			for(int i = 0; i< sensors.size();i++) {
-//				if(!inCave(aktPos)) {
-//					if(!sensors.get(i).positionPossible(aktPos)) {
-//						count ++;
-//						continue Position;
-//						}
-//				}else {
-//					if(cave[aktPos[1]-minY][aktPos[0]-minX] instanceof Sensor) {
-//						count++;
-//						continue Position;
-//					} 
-//						
-//					else if(cave[aktPos[1]-minY][aktPos[0]-minX] instanceof Air){
-//						if(!sensors.get(i).positionPossible(aktPos)) {
-//							count ++;
-//							continue Position;
-//							}
-//					} 
-//					//check if the position is bloked by the Sensor
-//					
-//					
-//				}
-				//check if the position is bloked by the Sensor
-				int[] sensorPos = sensors.get(i).getPos();
-				if(aktPos[0] == sensorPos [0] && aktPos[1] == sensorPos[1]) {
-					count ++;
-					continue Position;}
-				if(!sensors.get(i).positionPossible(aktPos)) {
-					count ++;
-					continue Position;
-				}
+				
+		}
+		
+		return blocked.length;
+	}
+	
+	private int[] removeDuplicateElements(int[] arr){ 
+		if(arr.length > 0) {
+	       Arrays.sort(arr);
+	       ArrayList<Integer> outPutList = new ArrayList<Integer>();
+	       outPutList.add(arr[0]);
+	       for(int i = 0; i< arr.length; i++) {
+	    	   if(arr[i] != outPutList.get(outPutList.size()-1))
+	    		   outPutList.add(arr[i]);
+	       }
+	       int [] outPut = new int[outPutList.size()];
+	       for(int i = 0; i< outPut.length;i++) {
+	    	   outPut[i] = outPutList.get(i);
+	       }
+	       return outPut;}
+		return arr;
+	    }  
+	
+	private  int[] delete(int[] arr, int p) {
+		int[] outPut = new int[arr.length-1];
+		boolean pFound = false;
+		int indexOutPut = 0;
+		for(int i = 0; i< arr.length;i++) {
+			if(arr[i] == p) {
+				pFound = true;
+			}else {
+				if(indexOutPut < outPut.length)
+				outPut[indexOutPut] = arr[i];
+				indexOutPut++;
 			}
 		}
-		return count;
+		
+		if(pFound)
+			return outPut;
+		else
+			return arr;
+	}
+	
+	private int[] uniteArrays(int[] a, int[] b) {
+		int[] outPut = new int[a.length+b.length];
+		int outPutIndex = 0;
+		for(int i = 0; i<a.length;i++) {
+			outPut[outPutIndex] = a[i];
+			outPutIndex ++;
+		}
+		for(int i = 0; i<b.length;i++) {
+			outPut[outPutIndex] = b[i];
+			outPutIndex ++;
+		}
+		outPut = removeDuplicateElements(outPut);
+		return outPut;
 	}
 }

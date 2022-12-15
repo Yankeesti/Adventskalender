@@ -44,7 +44,7 @@ public class Main {
 				minX = beaconPos[0];
 		}
 		
-		Cave cave = new Cave(maxX, maxY, minX ,minY);
+		Cave cave = new Cave();
 		for(int i = 0; i< sensors.size();i++) {
 			cave.addSenosor(sensors.get(i));
 		}

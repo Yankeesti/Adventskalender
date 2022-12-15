@@ -22,7 +22,6 @@ public class Structure {
 	}
 	
 	public int getDistance(int[] p) {
-		
 		return Math.abs(pos[0]-p[0])+Math.abs(pos[1]-p[1]);
 	}
 }

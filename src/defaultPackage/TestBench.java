@@ -9,24 +9,20 @@ import Day13.Package;
 import Day14.Rock;
 import Day14.Sand;
 import Day14.Structure;
+import Day15.Sensor;
 
 public class TestBench {
-
 	public static void main(String[] args) {
-		int[] a = {6,3,6,7,2,1,-9,45,7,45,45};
-		int[] b = {8,4,-100,2,1,-9,45,45,45};
-		int[] c = { 6,-100,0,3,6,3,695};
+		Sensor test = new Sensor(8, 7, 2, 10);
+		for(int i = -2; i<16;i++) {
+		int[] temp = test.getBlockedPositions(i, 0, 20);
 		
-		a = removeDuplicateElements(a);
-		for(int i: a) {
-			System.out.println(i);
-		}
-		
-		a = delete(a,3);
-		for(int i: a) {
-			System.out.println(i);
+		System.out.println(temp[0]+" | "+temp[1]);
 		}
 	}
+	
+	
+	
 	private static int[] delete(int[] arr, int p) {
 		int[] outPut = new int[arr.length-1];
 		boolean pFound = false;

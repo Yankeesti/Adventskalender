@@ -48,7 +48,7 @@ public class Main {
 		for(int i = 0; i< sensors.size();i++) {
 			cave.addSenosor(sensors.get(i));
 		}
-		System.out.println(cave.getBeaconexcluded(2000000));
+		System.out.println(cave.getTuningFrequency(0,4000000 ));
 	}
 	
 	/**
